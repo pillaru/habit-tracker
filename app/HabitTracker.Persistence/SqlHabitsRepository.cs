@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Microsoft.Data.Sqlite;
 using HabitTracker.Domain;
 
@@ -27,18 +28,9 @@ public class SqlHabitsRepository : HabitsRepository
             var habits = new List<Habit>();
             while (reader.Read())
             {
-                var id = await reader.GetFieldValueAsync<Guid>(0);
-                var createdAt = await reader.GetFieldValueAsync<DateTimeOffset>(2);
-                var modifiedAt = await reader.GetFieldValueAsync<DateTimeOffset>(3);
-                var title = await reader.GetFieldValueAsync<string>(1);
-                var isDescriptionNull = await reader.IsDBNullAsync(4);
-                var description = isDescriptionNull
-                    ? null
-                    : await reader.GetFieldValueAsync<string>(4);
-                habits.Add(new Habit(id, title, createdAt)
-                {
-                    ModifiedAt = modifiedAt
-                });
+                var habit = await new HabitReconstitutionFactory
+                    ().Create(reader);
+                habits.Add(habit);
             }
             reader.Close();
             return habits;
@@ -70,6 +62,25 @@ public class SqlHabitsRepository : HabitsRepository
 
             await command.ExecuteNonQueryAsync();
         }
+    }
+}
+
+internal class HabitReconstitutionFactory
+{
+    public async Task<Habit> Create(DbDataReader reader)
+    {
+        var id = await reader.GetFieldValueAsync<Guid>(0);
+        var createdAt = await reader.GetFieldValueAsync<DateTimeOffset>(2);
+        var modifiedAt = await reader.GetFieldValueAsync<DateTimeOffset>(3);
+        var title = await reader.GetFieldValueAsync<string>(1);
+        var isDescriptionNull = await reader.IsDBNullAsync(4);
+        var description = isDescriptionNull
+            ? null
+            : await reader.GetFieldValueAsync<string>(4);
+        return new Habit(id, title, createdAt)
+        {
+            ModifiedAt = modifiedAt
+        };
     }
 }
 
