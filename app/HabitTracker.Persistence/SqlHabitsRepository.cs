@@ -12,6 +12,39 @@ public class SqlHabitsRepository : HabitsRepository
         this.connectionString = connectionString;
     }
 
+    public async Task<IEnumerable<Habit>> GetAll()
+    {
+        using (var connection = new SqliteConnection(this.connectionString))
+        {
+            await connection.OpenAsync();
+
+            var command = connection.CreateCommand();
+            command.CommandText =
+                @"SELECT Id, Title, CreatedAt, ModifiedAt, Description
+                FROM Habit";
+            var reader = await command.ExecuteReaderAsync();
+
+            var habits = new List<Habit>();
+            while (reader.Read())
+            {
+                var id = await reader.GetFieldValueAsync<Guid>(0);
+                var createdAt = await reader.GetFieldValueAsync<DateTimeOffset>(2);
+                var modifiedAt = await reader.GetFieldValueAsync<DateTimeOffset>(3);
+                var title = await reader.GetFieldValueAsync<string>(1);
+                var isDescriptionNull = await reader.IsDBNullAsync(4);
+                var description = isDescriptionNull
+                    ? null
+                    : await reader.GetFieldValueAsync<string>(4);
+                habits.Add(new Habit(id, title, createdAt)
+                {
+                    ModifiedAt = modifiedAt
+                });
+            }
+            reader.Close();
+            return habits;
+        }
+    }
+
     public async Task Save(Habit newHabit)
     {
         using (var connection = new SqliteConnection(this.connectionString))

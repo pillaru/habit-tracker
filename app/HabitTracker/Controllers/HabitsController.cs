@@ -14,6 +14,13 @@ public class HabitsController : Controller
     }
 
     [HttpGet]
+    public async Task<ViewResult> Index()
+    {
+        var habits = await this.habitsRepository.GetAll();
+        return View(habits);
+    }
+
+    [HttpGet]
     public ViewResult New()
     {
         return View();
@@ -30,7 +37,7 @@ public class HabitsController : Controller
                 Description = newHabit.Description
             };
             await this.habitsRepository.Save(habit);
-            return RedirectToAction("New");
+            return RedirectToAction("Index");
         }
         return View(newHabit);
     }
