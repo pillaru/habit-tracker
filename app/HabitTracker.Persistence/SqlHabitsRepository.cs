@@ -78,6 +78,7 @@ internal class HabitReconstitutionFactory
             : await reader.GetFieldValueAsync<string>(4);
         return new Habit(id, title, createdAt)
         {
+            Description = description,
             ModifiedAt = modifiedAt
         };
     }
