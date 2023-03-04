@@ -28,8 +28,7 @@ public class SqlHabitsRepository : HabitsRepository
             var habits = new List<Habit>();
             while (reader.Read())
             {
-                var habit = await new HabitReconstitutionFactory
-                    ().Create(reader);
+                var habit = await new HabitReconstitutionFactory().Create(reader);
                 habits.Add(habit);
             }
             reader.Close();
