@@ -1,22 +1,29 @@
 @model HabitTracker.Models.NewHabitDto;
 
+<div class="ui breadcrumb">
+    <a class="section" href="/">Home</a>
+    <div class="divider"> / </div>
+    <div class="section">Habits</div>
+    <div class="divider"> / </div>
+    <div class="active section">New</div>
+</div>
+
 <h2>Start a new habit</h2>
 
-<form method="POST">
+<form method="POST" class="ui form">
 
-<div>
-    <label asp-for="Title">Title</label>
-    <input asp-for="Title" />
-</div>
+    <div class="field">
+        <label asp-for="Title">Title</label>
+        <input asp-for="Title" />
+    </div>
 
-<div>
-    <label asp-for="Description">Description (optional)</label>
-    <textarea asp-for="Description" rows="3" cols="100"></textarea>
-</div>
+    <div class="field">
+        <label asp-for="Description">Description (optional)</label>
+        <textarea asp-for="Description" rows="3" cols="100"></textarea>
+    </div>
 
-<div>
-    <button type="submit">Submit</button>
-</div>
+    <div>
+        <button type="submit" class="ui button">Submit</button>
+    </div>
 
 </form>
-
