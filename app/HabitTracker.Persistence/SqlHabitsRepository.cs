@@ -36,6 +36,29 @@ public class SqlHabitsRepository : HabitsRepository
         }
     }
 
+    public async Task<Habit?> GetById(Guid id)
+    {
+        Habit? habit = null;
+        using (var connection = new SqliteConnection(this.connectionString))
+        {
+            await connection.OpenAsync();
+
+            var command = connection.CreateCommand();
+            command.CommandText =
+                @"SELECT Id, Title, CreatedAt, ModifiedAt, Description
+                FROM Habit WHERE Id = $id";
+            command.Parameters.AddWithValue("$id", id);
+            var reader = await command.ExecuteReaderAsync();
+
+            if (reader.Read())
+            {
+                habit = await new HabitReconstitutionFactory().Create(reader);
+            }
+            reader.Close();
+            return habit;
+        }
+    }
+
     public async Task Save(Habit newHabit)
     {
         using (var connection = new SqliteConnection(this.connectionString))

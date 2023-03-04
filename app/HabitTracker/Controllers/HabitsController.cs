@@ -23,9 +23,7 @@ public class HabitsController : Controller
     [HttpGet]
     public async Task<ActionResult> Details(Guid id)
     {
-        // TODO: Implement with actual repository code
-        var habits = await habitsRepository.GetAll();
-        var habit = habits.FirstOrDefault(h => h.Id == id);
+        var habit = await habitsRepository.GetById(id);
         if (habit == null) return NotFound();
         return View(habit);
     }
