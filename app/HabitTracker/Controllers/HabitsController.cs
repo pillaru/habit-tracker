@@ -21,6 +21,15 @@ public class HabitsController : Controller
     }
 
     [HttpGet]
+    public async Task<ActionResult> Details(Guid id)
+    {
+        var habits = await habitsRepository.GetAll();
+        var habit = habits.FirstOrDefault(h => h.Id == id);
+        if (habit == null) return NotFound();
+        return View(habit);
+    }
+
+    [HttpGet]
     public ViewResult New()
     {
         return View();

@@ -12,7 +12,7 @@
     {
         <div class="item">
             <div class="content">
-                <div class="header">@habit.Title</div>
+                <a asp-controller="Habits" asp-action="Details" asp-route-id="@habit.Id" class="header">@habit.Title</a>
                 <div class="description">@habit.Description</div>
             </div>
         </div>
