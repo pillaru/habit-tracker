@@ -29,9 +29,10 @@ public class HabitsController : Controller
     }
 
     [HttpGet]
-    public ActionResult Delete(Guid id)
+    public async Task<ActionResult> Delete(Guid id)
     {
-        return RedirectToAction("Details", new { id });
+        await habitsRepository.Delete(id);
+        return RedirectToAction("Index");
         // var result = await this.habitsRepository.Delete(id);
         // return result
         //     .Select(_ => RedirectToAction("Index"))

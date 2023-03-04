@@ -13,6 +13,17 @@ public class SqlHabitsRepository : HabitsRepository
         this.connectionString = connectionString;
     }
 
+    public async Task Delete(Guid id)
+    {
+        using var connection = new SqliteConnection(this.connectionString);
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+        command.CommandText = "DELETE FROM Habit WHERE Id = $id";
+        command.Parameters.AddWithValue("$id", id);
+        await command.ExecuteNonQueryAsync();
+    }
+
     public async Task<IEnumerable<Habit>> GetAll()
     {
         using (var connection = new SqliteConnection(this.connectionString))
