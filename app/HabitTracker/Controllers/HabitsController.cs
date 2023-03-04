@@ -23,10 +23,22 @@ public class HabitsController : Controller
     [HttpGet]
     public async Task<ActionResult> Details(Guid id)
     {
+        // TODO: Implement with actual repository code
         var habits = await habitsRepository.GetAll();
         var habit = habits.FirstOrDefault(h => h.Id == id);
         if (habit == null) return NotFound();
         return View(habit);
+    }
+
+    [HttpGet]
+    public ActionResult Delete(Guid id)
+    {
+        return RedirectToAction("Details", new { id });
+        // var result = await this.habitsRepository.Delete(id);
+        // return result
+        //     .Select(_ => RedirectToAction("Index"))
+        //     .SelectError(_ => NotFound())
+        //     .BiFold();
     }
 
     [HttpGet]
