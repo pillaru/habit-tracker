@@ -16,28 +16,23 @@ public class HabitsController : Controller
     [HttpGet]
     public async Task<ViewResult> Index()
     {
-        var habits = await this.habitsRepository.GetAll();
+        IEnumerable<Habit> habits = await this.habitsRepository.GetAll()
+            .ConfigureAwait(false);
         return View(habits);
     }
 
     [HttpGet]
     public async Task<ActionResult> Details(Guid id)
     {
-        var habit = await habitsRepository.GetById(id);
-        if (habit == null) return NotFound();
-        return View(habit);
+        Habit? habit = await habitsRepository.GetById(id).ConfigureAwait(false);
+        return habit == null ? NotFound() : View(habit);
     }
 
     [HttpGet]
     public async Task<ActionResult> Delete(Guid id)
     {
-        await habitsRepository.Delete(id);
+        await habitsRepository.Delete(id).ConfigureAwait(false);
         return RedirectToAction("Index");
-        // var result = await this.habitsRepository.Delete(id);
-        // return result
-        //     .Select(_ => RedirectToAction("Index"))
-        //     .SelectError(_ => NotFound())
-        //     .BiFold();
     }
 
     [HttpGet]
@@ -50,13 +45,14 @@ public class HabitsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> New(NewHabitDto newHabit)
     {
+        ArgumentNullException.ThrowIfNull(newHabit);
         if (ModelState.IsValid)
         {
             var habit = new Habit(Guid.NewGuid(), newHabit.Title, DateTimeOffset.UtcNow)
             {
                 Description = newHabit.Description
             };
-            await this.habitsRepository.Save(habit);
+            await this.habitsRepository.Save(habit).ConfigureAwait(false);
             return RedirectToAction("Index");
         }
         return View(newHabit);

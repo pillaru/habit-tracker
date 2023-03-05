@@ -11,9 +11,13 @@ public class Habit
     public Habit(Guid id, string title, DateTimeOffset createdAt)
     {
         if (id == Guid.Empty)
-            throw new ArgumentException(nameof(id));
+            throw new ArgumentException("Contains empty Guid", nameof(id));
         if (string.IsNullOrWhiteSpace(title) || title.Length > 60)
-            throw new ArgumentException(nameof(title));
+        {
+            throw new ArgumentException(
+                "Title must not be empty of longer than 60 characters long",
+                nameof(title));
+        }
 
         Id = id;
         Title = title;
