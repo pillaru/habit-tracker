@@ -13,6 +13,17 @@ public class SqlHabitsRepository : HabitsRepository
         this.connectionString = connectionString;
     }
 
+    public async Task Delete(Guid id)
+    {
+        using var connection = new SqliteConnection(this.connectionString);
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+        command.CommandText = "DELETE FROM Habit WHERE Id = $id";
+        command.Parameters.AddWithValue("$id", id);
+        await command.ExecuteNonQueryAsync();
+    }
+
     public async Task<IEnumerable<Habit>> GetAll()
     {
         using (var connection = new SqliteConnection(this.connectionString))
@@ -33,6 +44,29 @@ public class SqlHabitsRepository : HabitsRepository
             }
             reader.Close();
             return habits;
+        }
+    }
+
+    public async Task<Habit?> GetById(Guid id)
+    {
+        Habit? habit = null;
+        using (var connection = new SqliteConnection(this.connectionString))
+        {
+            await connection.OpenAsync();
+
+            var command = connection.CreateCommand();
+            command.CommandText =
+                @"SELECT Id, Title, CreatedAt, ModifiedAt, Description
+                FROM Habit WHERE Id = $id";
+            command.Parameters.AddWithValue("$id", id);
+            var reader = await command.ExecuteReaderAsync();
+
+            if (reader.Read())
+            {
+                habit = await new HabitReconstitutionFactory().Create(reader);
+            }
+            reader.Close();
+            return habit;
         }
     }
 
@@ -78,6 +112,7 @@ internal class HabitReconstitutionFactory
             : await reader.GetFieldValueAsync<string>(4);
         return new Habit(id, title, createdAt)
         {
+            Description = description,
             ModifiedAt = modifiedAt
         };
     }

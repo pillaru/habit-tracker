@@ -1,0 +1,17 @@
+@model HabitTracker.Domain.Habit
+
+<div class="ui breadcrumb">
+    <a class="section" href="/">Home</a>
+    <div class="divider"> / </div>
+    <div class="section">Habits</div>
+    <div class="divider"> / </div>
+    <div class="active section">@Model.Title</div>
+</div>
+
+<h2>@Model.Title</h2>
+<h3>@Model.Description</h3>
+
+<div>Created at: @Model.CreatedAt</div>
+<div>Modified at: @Model.ModifiedAt</div>
+
+<a asp-controller="Habits" asp-action="Delete" asp-route-id="@Model.Id" class="ui button">Delete</a>
