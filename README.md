@@ -15,7 +15,6 @@ dotnet run --project app/HabitTracker/
 ## TODOS
 
 - Add .NET Analyzers for warning on unused variables
-- Make build fail on warnings
 - Add unit test project
 - Set default PORT for the application
 - Upgrade to .NET 7
