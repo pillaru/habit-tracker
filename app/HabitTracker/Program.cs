@@ -5,7 +5,7 @@ using HabitTracker.Persistence;
 
 const string connectionString = "Data Source=habit_tracker_dev.db";
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddFluentMigratorCore()
@@ -18,9 +18,9 @@ builder.Services
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<HabitsRepository>(_ => new SqlHabitsRepository(connectionString));
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+using (IServiceScope scope = app.Services.CreateScope())
 {
     UpdateDatabase(scope.ServiceProvider);
 }
@@ -33,6 +33,6 @@ app.Run();
 
 static void UpdateDatabase(IServiceProvider serviceProvider)
 {
-    var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+    IMigrationRunner runner = serviceProvider.GetRequiredService<IMigrationRunner>();
     runner.MigrateUp();
 }

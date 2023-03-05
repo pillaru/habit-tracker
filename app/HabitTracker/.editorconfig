@@ -1,0 +1,5 @@
+root = false
+
+# Workaround for https://github.com/dotnet/roslyn-analyzers/issues/5628
+[Program.cs]
+dotnet_diagnostic.ca1812.severity = none

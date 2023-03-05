@@ -1,5 +1,7 @@
 <Project>
   <PropertyGroup>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <AnalysisLevel>latest-All</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 </Project>
