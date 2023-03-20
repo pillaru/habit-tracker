@@ -13,7 +13,12 @@ internal class InMemoryHabitsRepository : HabitsRepository
 
     public Task Delete(Guid id)
     {
-        throw new NotImplementedException();
+        Habit? item = items.SingleOrDefault(x => x.Id == id);
+        if (item != null)
+        {
+            bool _ = items.Remove(item);
+        }
+        return Task.CompletedTask;
     }
 
     public Task<IEnumerable<Habit>> GetAll()

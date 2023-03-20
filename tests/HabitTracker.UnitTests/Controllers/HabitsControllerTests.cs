@@ -46,7 +46,19 @@ public sealed class HabitsControllerTests : IDisposable
         ViewResult actualResult = Assert.IsType<ViewResult>(result);
         Assert.Equal(actualResult.Model, habit);
     }
-    
+
+    [Fact]
+    public async Task Delete_redirects_to_Index()
+    {
+        var habit = new Habit(Guid.NewGuid(), "title", DateTimeOffset.UtcNow);
+        await repository.Save(habit).ConfigureAwait(false);
+        ActionResult result = await sut.Delete(habit.Id).ConfigureAwait(false);
+        RedirectToActionResult redirection = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("Index", redirection.ActionName);
+        Habit? deleted = await repository.GetById(habit.Id).ConfigureAwait(false);
+        Assert.Null(deleted);
+    }
+
     public void Dispose()
     {
         sut.Dispose();
