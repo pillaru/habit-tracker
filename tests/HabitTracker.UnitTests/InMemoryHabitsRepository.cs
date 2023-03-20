@@ -23,11 +23,13 @@ internal class InMemoryHabitsRepository : HabitsRepository
 
     public Task<Habit?> GetById(Guid id)
     {
-        throw new NotImplementedException();
+        Habit? item = items.SingleOrDefault(x => x.Id == id);
+        return Task.FromResult(item);
     }
 
     public Task Save(Habit habit)
     {
-        throw new NotImplementedException();
+        items.Add(habit);
+        return Task.CompletedTask;
     }
 }
