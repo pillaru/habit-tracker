@@ -1,5 +1,6 @@
 using HabitTracker.Controllers;
 using HabitTracker.Domain;
+using HabitTracker.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HabitTracker.UnitTests.Controllers;
@@ -34,7 +35,7 @@ public sealed class HabitsControllerTests : IDisposable
     {
         var id = new Guid("75c6e184-0a07-4a27-b5a9-e900df0dc2ce");
         ActionResult result = await sut.Details(id).ConfigureAwait(false);
-        NotFoundResult _ = Assert.IsType<NotFoundResult>(result);
+        _ = Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]
@@ -57,6 +58,40 @@ public sealed class HabitsControllerTests : IDisposable
         Assert.Equal("Index", redirection.ActionName);
         Habit? deleted = await repository.GetById(habit.Id).ConfigureAwait(false);
         Assert.Null(deleted);
+    }
+
+    [Fact]
+    public void New_returns_ViewResult()
+    {
+        ViewResult result = sut.New();
+        _ = Assert.IsType<ViewResult>(result);
+    }
+
+    [Fact]
+    public async Task New_redirects_to_Index_after_saving()
+    {
+        var habitDto = new NewHabitDto("title", "description");
+        IActionResult result = await sut.New(habitDto).ConfigureAwait(false);
+        RedirectToActionResult redirection = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("Index", redirection.ActionName);
+        IEnumerable<Habit> habits = await repository.GetAll().ConfigureAwait(false);
+        Habit? habit = habits.FirstOrDefault(
+                x => x.Title == "title" && x.Description == "description");
+        Assert.NotNull(habit);
+    }
+
+    [Fact]
+    public async Task New_doesnt_save_with_invalid_ModelState()
+    {
+        var habitDto = new NewHabitDto("title", "description");
+        sut.ModelState.AddModelError("title", "an error");
+        IActionResult result = await sut.New(habitDto).ConfigureAwait(false);
+        ViewResult view = Assert.IsType<ViewResult>(result);
+        Assert.Equal(habitDto, view.Model);
+        IEnumerable<Habit> habits = await repository.GetAll().ConfigureAwait(false);
+        Habit? habit = habits.FirstOrDefault(
+                x => x.Title == "title" && x.Description == "description");
+        Assert.Null(habit);
     }
 
     public void Dispose()
