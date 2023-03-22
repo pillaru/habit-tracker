@@ -12,6 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      image_name: ${{ steps.meta.outputs.tags }}
 
     steps:
       - uses: actions/checkout@v3
@@ -44,3 +46,24 @@ jobs:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: 'remote deploy using SSH'
+        uses: appleboy/ssh-action@v0.1.8
+        env:
+          DOCKER_USERNAME: ${{ github.repository_owner }}
+          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          IMAGE: ${{ needs.build.outputs.image_name }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          password: ${{ secrets.DEPLOY_PASSWORD }}
+          envs: DOCKER_USERNAME,DOCKER_PASSWORD,IMAGE
+          script: |
+            docker container stop habit-tracker
+            docker container prune --force
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ghcr.io
+            docker run --detach --name habit-tracker $IMAGE
