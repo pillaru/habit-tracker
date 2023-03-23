@@ -2,6 +2,8 @@ build:
 	dotnet build ./app/HabitTracker
 test:
 	dotnet test ./tests/HabitTracker.UnitTests
+start:
+	dotnet run --project ./app/HabitTracker
 migrate_up: build
 	dotnet fm migrate --processor SQLite -c "Data Source=./app/HabitTracker/habit_tracker_dev.db" \
 		-a "./app/HabitTracker/bin/Debug/net6.0/HabitTracker.Persistence.dll" \

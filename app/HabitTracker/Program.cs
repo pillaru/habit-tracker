@@ -25,6 +25,13 @@ using (IServiceScope scope = app.Services.CreateScope())
     UpdateDatabase(scope.ServiceProvider);
 }
 
+if (!app.Environment.IsDevelopment())
+{
+    _ = app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+
 app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Habits}/{action=Index}/{id?}");
