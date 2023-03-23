@@ -18,6 +18,14 @@ builder.Services
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<HabitsRepository>(_ => new SqlHabitsRepository(connectionString));
 
+if (!builder.Environment.IsDevelopment())
+{
+    _ = builder.Services.AddHttpsRedirection(options =>
+    {
+        options.HttpsPort = 443;
+    });
+}
+
 WebApplication app = builder.Build();
 
 using (IServiceScope scope = app.Services.CreateScope())
