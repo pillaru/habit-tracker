@@ -66,4 +66,6 @@ jobs:
             docker container stop habit-tracker
             docker container prune --force
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ghcr.io
-            docker run --detach --name habit-tracker $IMAGE
+            docker run --detach --name habit-tracker \
+              --label "traefik.http.routers.habit-tracker.rule=Host(`habits.chekkan.com`)" \
+              $IMAGE
