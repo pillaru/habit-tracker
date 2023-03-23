@@ -63,9 +63,9 @@ jobs:
           password: ${{ secrets.DEPLOY_PASSWORD }}
           envs: DOCKER_USERNAME,DOCKER_PASSWORD,IMAGE
           script: |
-            docker container stop habit-tracker
+            docker container stop habits
             docker container prune --force
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ghcr.io
-            docker run --detach --name habit-tracker \
-              --label "traefik.http.routers.habit-tracker.rule=Host(\`habits.chekkan.com\`)" \
+            docker run --detach --name habits \
+              --label "traefik.http.routers.habits.rule=Host(\`habits.chekkan.com\`)" \
               $IMAGE
