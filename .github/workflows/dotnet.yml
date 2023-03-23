@@ -51,7 +51,7 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: 'remote deploy using SSH'
+      - name: "remote deploy using SSH"
         uses: appleboy/ssh-action@v0.1.8
         env:
           DOCKER_USERNAME: ${{ github.repository_owner }}
@@ -67,5 +67,5 @@ jobs:
             docker container prune --force
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ghcr.io
             docker run --detach --name habit-tracker \
-              --label "traefik.http.routers.habit-tracker.rule=Host(`habits.chekkan.com`)" \
+              --label "traefik.http.routers.habit-tracker.rule=Host(\`habits.chekkan.com\`)" \
               $IMAGE
