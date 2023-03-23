@@ -18,27 +18,12 @@ builder.Services
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<HabitsRepository>(_ => new SqlHabitsRepository(connectionString));
 
-if (!builder.Environment.IsDevelopment())
-{
-    _ = builder.Services.AddHttpsRedirection(options =>
-    {
-        options.HttpsPort = 443;
-    });
-}
-
 WebApplication app = builder.Build();
 
 using (IServiceScope scope = app.Services.CreateScope())
 {
     UpdateDatabase(scope.ServiceProvider);
 }
-
-if (!app.Environment.IsDevelopment())
-{
-    _ = app.UseHsts();
-}
-
-app.UseHttpsRedirection();
 
 app.MapControllerRoute(
         name: "default",

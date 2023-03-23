@@ -72,4 +72,6 @@ jobs:
               --label "traefik.http.routers.habits.tls.certresolver=myresolver" \
               --label "traefik.http.routers.habits.tls.domains[0].main=habits.chekkan.com" \
               --label "traefik.http.routers.habits-http.rule=Host(\`habits.chekkan.com\`)" \
+              --label "traefik.http.middlewares.httpsredirect.redirectscheme.scheme=https"
+              --label "traefik.http.middlewares.httpsredirect.redirectscheme.permanent=true"
               $IMAGE
