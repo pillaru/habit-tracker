@@ -67,11 +67,8 @@ jobs:
             docker container prune --force
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ghcr.io
             docker run --detach --name habits \
-              --label "traefik.http.routers.habits-secure.rule=Host(\`habits.chekkan.com\`)" \
-              --label "traefik.http.routers.habits-secure.tls=true" \
-              --label "traefik.http.routers.habits-secure.tls.certresolver=myresolver" \
-              --label "traefik.http.routers.habits-secure.tls.domains[0].main=habits.chekkan.com" \
-              --label "traefik.http.routers.habits-secure.entrypoints=websecure" \
               --label "traefik.http.routers.habits.rule=Host(\`habits.chekkan.com\`)" \
-              --label "traefik.http.routers.habits.entrypoints=web" \
+              --label "traefik.http.routers.habits.tls=true" \
+              --label "traefik.http.routers.habits.tls.certresolver=myresolver" \
+              --label "traefik.http.routers.habits.tls.domains[0].main=habits.chekkan.com" \
               $IMAGE
