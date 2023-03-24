@@ -74,4 +74,5 @@ jobs:
               --label "traefik.http.routers.habits-http.rule=Host(\`habits.chekkan.com\`)" \
               --label "traefik.http.middlewares.httpsredirect.redirectscheme.scheme=https" \
               --label "traefik.http.middlewares.httpsredirect.redirectscheme.permanent=true" \
+              --label "traefik.http.routers.habits-http.middlewares=httpsredirect" \
               $IMAGE
